@@ -1,0 +1,12 @@
+Search Results
+==================================================
+
+
+==================================================
+Directory: C:\Users\ajays\OneDrive\Desktop\ComPair
+==================================================
+
+Checking file: report2.txt for keyword '12.8'
+LINE       | WORD POSITIONS
+--------------------------------
+Line: 118    | [3]
