@@ -54,8 +54,6 @@ pip install PyPDF2 colorama
 4. **Output:**
    - The results will be logged in an `output.txt` file, detailing the occurrences found.
 
-## Code Breakdown
-
 ### Imports
 
 - **os, fnmatch**: For directory traversal and file pattern matching.
