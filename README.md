@@ -100,7 +100,6 @@ Traverses the directory, searches for specified keywords in each file, and logs 
 
 ```python
 def main():
-    ...
 ```
 The entry point of the script, which orchestrates reading inputs, executing searches, and prompting for repeated searches.
 
