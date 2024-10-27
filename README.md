@@ -1,4 +1,3 @@
-```markdown
 ## Overview
 
 **File Name:** `FileCrawler.py`  
@@ -116,6 +115,5 @@ The entry point of the script, which orchestrates reading inputs, executing sear
 - Ensure that the directory you specify in `input.txt` exists and is accessible.
 - The script handles multiple file formats as specified in the `file_patterns` list.
 - For PDF files, ensure that the `PyPDF2` library is installed; otherwise, PDF search functionality will be disabled.
-
 
 ```
