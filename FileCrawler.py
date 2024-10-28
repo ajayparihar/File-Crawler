@@ -10,27 +10,41 @@
 import os
 import fnmatch
 
+# Attempt to import necessary libraries for PDF handling
 try:
     import PyPDF2
     PDF_SUPPORTED = True
 except ImportError:
     PDF_SUPPORTED = False
 
+# Attempt to import colorama for colored terminal output
 try:
     from colorama import Fore, Style, init
     init(autoreset=True)
 except ImportError:
     pass
 
+# ========================== Constants ==========================
+OUTPUT_HEADER = "Search Results"
+OUTPUT_SEPARATOR = "=" * 50 + "\n"
+FILE_PATTERNS = [
+    '*.txt', '*.csv', '*.log', '*.bat', '*.py', '*.java', '*.cpp', '*.c',
+    '*.js', '*.html', '*.xml', '*.json', '*.md', '*.doc', '*.docx', '*.xls',
+    '*.xlsx', '*.ppt', '*.pptx', '*.rtf', '*.sql', '*.yaml', '*.yml',
+    '*.tsv', '*.ini', '*.config', '*.svg', '*.sh', '*.pl', '*.rb', '*.pdf'
+]
+
+# ========================== Error Handling ==========================
 def log_error(message):
     """Log error messages in red."""
     print(f"{Fore.RED}Error: {message}{Style.RESET_ALL}")
 
 def write_and_print(out_file, message):
-    """Write the message to file and print to the console."""
+    """Write the message to the output file and print to the console."""
     out_file.write(message + "\n")
     print(message)
 
+# ========================== File Search ==========================
 def get_word_positions(words, search_string):
     """Return positions of search_string in a list of words."""
     return [index for index, word in enumerate(words) if word.lower() == search_string.lower()]
@@ -45,9 +59,7 @@ def search_text_file(filename, search_string):
                 positions = get_word_positions(words, search_string)
                 if positions:
                     occurrences.append((line_num, positions))
-    except FileNotFoundError:
-        log_error(f"File not found: '{filename}'")
-    except Exception as e:
+    except (FileNotFoundError, IOError) as e:
         log_error(f"Could not read text file '{filename}': {e}")
     return occurrences
 
@@ -70,13 +82,6 @@ def search_pdf_file(filename, search_string):
 
 def search_files(directory, search_strings, output_file):
     """Search for strings in all readable files in the specified directory."""
-    file_patterns = [
-        '*.txt', '*.csv', '*.log', '*.bat', '*.py', '*.java', '*.cpp', '*.c',
-        '*.js', '*.html', '*.xml', '*.json', '*.md', '*.doc', '*.docx', '*.xls',
-        '*.xlsx', '*.ppt', '*.pptx', '*.rtf', '*.sql', '*.yaml', '*.yml',
-        '*.tsv', '*.ini', '*.config', '*.svg', '*.sh', '*.pl', '*.rb', '*.pdf'
-    ]
-
     directories_searched = set()
     files_searched = []
     matched_directories = set()
@@ -86,24 +91,19 @@ def search_files(directory, search_strings, output_file):
             directories_searched.add(dirpath)
             directory_match_found = False
 
-            for pattern in file_patterns:
+            for pattern in FILE_PATTERNS:
                 for filename in fnmatch.filter(filenames, pattern):
                     file_path = os.path.join(dirpath, filename)
                     files_searched.append(file_path)
 
                     for search_string in search_strings:
-                        occurrences = []
-                        if filename.lower().endswith('.pdf') and PDF_SUPPORTED:
-                            occurrences = search_pdf_file(file_path, search_string)
-                        else:
-                            occurrences = search_text_file(file_path, search_string)
+                        occurrences = search_pdf_file(file_path, search_string) if filename.lower().endswith('.pdf') and PDF_SUPPORTED else search_text_file(file_path, search_string)
 
                         if occurrences:
                             if not directory_match_found:
                                 matched_directories.add(dirpath)
                                 directory_match_found = True
                             log_and_print_occurrences(out_file, file_path, occurrences, search_string)
-                        # Skips printing "No matches found" messages for individual files
 
         write_summary(out_file, directories_searched, files_searched, search_strings, matched_directories)
 
@@ -121,16 +121,17 @@ def log_and_print_occurrences(out_file, file_path, occurrences, search_string):
 
 def write_summary(out_file, directories_searched, files_searched, search_strings, matched_directories):
     """Write a summary of directories and files searched, including matched directories."""
-    summary = "\n\n" + "=" * 50 + "\nSUMMARY OF SEARCH\n" + "=" * 50
-    summary += f"\nTotal Directories Searched: {len(directories_searched)}"
-    summary += f"\nTotal Files Searched: {len(files_searched)}"
-    summary += f"\nKeywords Searched: {', '.join(search_strings)}\n"
-    summary += f"\nMatched Directories: {len(matched_directories)}"
-    summary += "\n\nDirectories with Matches:\n" + "\n".join(matched_directories) + "\n\n"
-    summary += "Directories Searched:\n" + "\n".join(directories_searched) + "\n\n"
+    summary = "\n\n" + OUTPUT_SEPARATOR + "SUMMARY OF SEARCH\n" + OUTPUT_SEPARATOR
+    summary += f"Total Directories Searched: {len(directories_searched)}\n"
+    summary += f"Total Files Searched: {len(files_searched)}\n"
+    summary += f"Keywords Searched: {', '.join(search_strings)}\n"
+    summary += f"Matched Directories: {len(matched_directories)}\n"
+    summary += "Directories with Matches:\n" + "\n".join(matched_directories) + "\n"
+    summary += "Directories Searched:\n" + "\n".join(directories_searched) + "\n"
     summary += "Files Searched:\n" + "\n".join(files_searched) + "\n"
     write_and_print(out_file, summary)
 
+# ========================== Input Handling ==========================
 def read_input_file(input_file):
     """Read directory and search keywords from an input file."""
     try:
@@ -152,14 +153,14 @@ def update_input_file(input_file, directory, keywords):
         file.write(directory + '\n')
         file.write('\n'.join(keywords) + '\n')
 
+# ========================== Main Function ==========================
 def main():
     input_file = 'input.txt'
     output_file = 'output.txt'  # Output file to log results
 
     # Clear the output file at the start of each run
     with open(output_file, 'w') as f:
-        f.write("Search Results\n")
-        f.write("=" * 50 + "\n\n")
+        f.write(OUTPUT_HEADER + "\n" + OUTPUT_SEPARATOR)
 
     while True:
         # Read inputs from the input file
