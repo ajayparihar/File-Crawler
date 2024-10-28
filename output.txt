@@ -1,58 +1,25 @@
 Search Results
 ==================================================
 
-
-Searching for '12.5' in file: report1.txt
-==================================================
-Matches found for '12.5' in file: report1.txt
-LINE       | WORD POSITIONS
+Matches found for '12.5' in file: C:\Users\ajays\OneDrive\Desktop\Test\report1.txt
+LINE/PAGE  | WORD POSITIONS
 ------------------------------
-Line: 8      | [3]
-Line: 67     | [3]
+8          | [3]
+67         | [3]
 
 
-
-
-
-Searching for '12.5' in file: report2.txt
-==================================================
-No matches found for '12.5' in file: report2.txt
-
-
-
-Searching for '12.5' in file: SDE.pdf
-==================================================
-No matches found for '12.5' in file: SDE.pdf
-
-
-
-Searching for '12.5' in file: spring_boot_tutorial[1].pdf
-==================================================
-No matches found for '12.5' in file: spring_boot_tutorial[1].pdf
-
-
-
-Searching for '12.5' in file: report1.txt
-==================================================
-Matches found for '12.5' in file: report1.txt
-LINE       | WORD POSITIONS
+Matches found for '12.5' in file: C:\Users\ajays\OneDrive\Desktop\Test\New folder\report1.txt
+LINE/PAGE  | WORD POSITIONS
 ------------------------------
-Line: 8      | [3]
-Line: 67     | [3]
+8          | [3]
+67         | [3]
 
 
-
-
-
-Searching for '12.5' in file: report1.txt
-==================================================
-Matches found for '12.5' in file: report1.txt
-LINE       | WORD POSITIONS
+Matches found for '12.5' in file: C:\Users\ajays\OneDrive\Desktop\Test\New folder - Copy\report1.txt
+LINE/PAGE  | WORD POSITIONS
 ------------------------------
-Line: 8      | [3]
-Line: 67     | [3]
-
-
+8          | [3]
+67         | [3]
 
 
 
@@ -67,14 +34,75 @@ Keywords Searched: 12.5
 Matched Directories: 3
 
 Directories with Matches:
+C:\Users\ajays\OneDrive\Desktop\Test
 C:\Users\ajays\OneDrive\Desktop\Test\New folder - Copy
 C:\Users\ajays\OneDrive\Desktop\Test\New folder
+
+Directories Searched:
+C:\Users\ajays\OneDrive\Desktop\Test
+C:\Users\ajays\OneDrive\Desktop\Test\New folder - Copy
+C:\Users\ajays\OneDrive\Desktop\Test\New folder
+
+Files Searched:
+C:\Users\ajays\OneDrive\Desktop\Test\report1.txt
+C:\Users\ajays\OneDrive\Desktop\Test\report2.txt
+C:\Users\ajays\OneDrive\Desktop\Test\SDE.pdf
+C:\Users\ajays\OneDrive\Desktop\Test\spring_boot_tutorial[1].pdf
+C:\Users\ajays\OneDrive\Desktop\Test\New folder\report1.txt
+C:\Users\ajays\OneDrive\Desktop\Test\New folder - Copy\report1.txt
+
+Matches found for '6969' in file: C:\Users\ajays\OneDrive\Desktop\Test\SDE.pdf
+LINE/PAGE  | WORD POSITIONS
+------------------------------
+77244      | [1]
+163232     | [0]
+
+
+
+
+==================================================
+SUMMARY OF SEARCH
+==================================================
+Total Directories Searched: 3
+Total Files Searched: 6
+Keywords Searched: 6969
+
+Matched Directories: 1
+
+Directories with Matches:
 C:\Users\ajays\OneDrive\Desktop\Test
 
 Directories Searched:
+C:\Users\ajays\OneDrive\Desktop\Test
 C:\Users\ajays\OneDrive\Desktop\Test\New folder - Copy
 C:\Users\ajays\OneDrive\Desktop\Test\New folder
+
+Files Searched:
+C:\Users\ajays\OneDrive\Desktop\Test\report1.txt
+C:\Users\ajays\OneDrive\Desktop\Test\report2.txt
+C:\Users\ajays\OneDrive\Desktop\Test\SDE.pdf
+C:\Users\ajays\OneDrive\Desktop\Test\spring_boot_tutorial[1].pdf
+C:\Users\ajays\OneDrive\Desktop\Test\New folder\report1.txt
+C:\Users\ajays\OneDrive\Desktop\Test\New folder - Copy\report1.txt
+
+
+
+==================================================
+SUMMARY OF SEARCH
+==================================================
+Total Directories Searched: 3
+Total Files Searched: 6
+Keywords Searched: 456465465465456
+
+Matched Directories: 0
+
+Directories with Matches:
+
+
+Directories Searched:
 C:\Users\ajays\OneDrive\Desktop\Test
+C:\Users\ajays\OneDrive\Desktop\Test\New folder - Copy
+C:\Users\ajays\OneDrive\Desktop\Test\New folder
 
 Files Searched:
 C:\Users\ajays\OneDrive\Desktop\Test\report1.txt

@@ -80,7 +80,7 @@ def search_files(directory, search_strings, output_file):
     directories_searched = set()
     files_searched = []
     matched_directories = set()
-    
+
     with open(output_file, 'a') as out_file:
         for dirpath, _, filenames in os.walk(directory):
             directories_searched.add(dirpath)
@@ -92,37 +92,30 @@ def search_files(directory, search_strings, output_file):
                     files_searched.append(file_path)
 
                     for search_string in search_strings:
-                        write_and_print(out_file, f"\nSearching for '{search_string}' in file: {filename}")
-                        write_and_print(out_file, "=" * 50)
                         occurrences = []
-
                         if filename.lower().endswith('.pdf') and PDF_SUPPORTED:
                             occurrences = search_pdf_file(file_path, search_string)
-                            context_label = "Page"
                         else:
                             occurrences = search_text_file(file_path, search_string)
-                            context_label = "Line"
 
                         if occurrences:
                             if not directory_match_found:
                                 matched_directories.add(dirpath)
                                 directory_match_found = True
-                            log_and_print_occurrences(out_file, filename, occurrences, context_label, search_string)
-                        else:
-                            write_and_print(out_file, f"No matches found for '{search_string}' in file: {filename}")
-                        write_and_print(out_file, "\n")
+                            log_and_print_occurrences(out_file, file_path, occurrences, search_string)
+                        # Skips printing "No matches found" messages for individual files
 
         write_summary(out_file, directories_searched, files_searched, search_strings, matched_directories)
 
-def log_and_print_occurrences(out_file, filename, occurrences, context_label, search_string):
-    """Log and print occurrences of the found string in a structured format."""
-    header = f"Matches found for '{search_string}' in file: {filename}"
+def log_and_print_occurrences(out_file, file_path, occurrences, search_string):
+    """Log and print occurrences of the found string in a structured format, with full file path."""
+    header = f"Matches found for '{search_string}' in file: {file_path}"
     write_and_print(out_file, header)
-    write_and_print(out_file, f"{context_label.upper():<10} | {'WORD POSITIONS'}")
+    write_and_print(out_file, f"{'LINE/PAGE':<10} | {'WORD POSITIONS'}")
     write_and_print(out_file, "-" * 30)
 
     for index, positions in occurrences:
-        out_line = f"{context_label.capitalize()}: {index:<6} | {positions}"
+        out_line = f"{index:<10} | {positions}"
         write_and_print(out_file, out_line)
     write_and_print(out_file, "\n")
 
