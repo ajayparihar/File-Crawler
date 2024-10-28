@@ -4,7 +4,7 @@
 #              (text and PDF) within a given directory. It logs the occurrences
 #              of the keywords along with their positions in the files.
 # Author: Ajay Singh
-# Version: 1.0
+# Version: 1.1
 # Date: 27-10-2024
 
 import os
@@ -76,13 +76,17 @@ def search_files(directory, search_strings, output_file):
     ]
 
     found_any = False
+    directories_searched = set()  # Track unique directories
+    files_searched = []  # Track all files processed
+    
     with open(output_file, 'a') as out_file:
         for dirpath, _, filenames in os.walk(directory):
-            directory_found = False  # Track if the directory has been printed
+            directories_searched.add(dirpath)  # Add directory to the set
 
             for pattern in file_patterns:
                 for filename in fnmatch.filter(filenames, pattern):
                     file_path = os.path.join(dirpath, filename)
+                    files_searched.append(file_path)  # Add file to list
 
                     for search_string in search_strings:
                         if filename.lower().endswith('.pdf') and PDF_SUPPORTED:
@@ -94,13 +98,14 @@ def search_files(directory, search_strings, output_file):
 
                         if occurrences:
                             found_any = True
-                            if not directory_found:
-                                log_and_print_directory(out_file, dirpath)
-                                directory_found = True
+                            log_and_print_directory(out_file, dirpath)
                             log_and_print_occurrences(out_file, filename, occurrences, context_label, search_string)
 
         if not found_any:
             output_no_results(out_file, directory)
+
+        # Write the summary at the end of the output file
+        write_summary(out_file, directories_searched, files_searched)
 
 def log_and_print_directory(out_file, directory):
     """Log and print the directory found with formatting."""
@@ -133,6 +138,16 @@ def output_no_results(out_file, directory):
     message = f"\n{'*' * 50}\nString not found in any files in directory: '{directory}'.\n{'*' * 50}\n"
     out_file.write(message)
     print(message)
+
+def write_summary(out_file, directories_searched, files_searched):
+    """Write a summary of directories and files searched to the output file."""
+    summary = "\n\n" + "=" * 50 + "\nSUMMARY OF SEARCH\n" + "=" * 50 + "\n"
+    summary += f"Total Directories Searched: {len(directories_searched)}\n"
+    summary += f"Total Files Searched: {len(files_searched)}\n\n"
+    summary += "Directories Searched:\n" + "\n".join(directories_searched) + "\n\n"
+    summary += "Files Searched:\n" + "\n".join(files_searched) + "\n"
+    out_file.write(summary)
+    print(summary)
 
 # ========================== Input Handling ==========================
 def read_input_file(input_file):

@@ -2,11 +2,58 @@ Search Results
 ==================================================
 
 
+**************************************************
+String not found in any files in directory: 'C:\Users\ajays\OneDrive\Desktop\Test'.
+**************************************************
+
+
 ==================================================
-Directory: C:\Users\ajays\OneDrive\Desktop\ComPair
+SUMMARY OF SEARCH
+==================================================
+Total Directories Searched: 3
+Total Files Searched: 2
+
+Directories Searched:
+C:\Users\ajays\OneDrive\Desktop\Test
+C:\Users\ajays\OneDrive\Desktop\Test\New folder - Copy
+C:\Users\ajays\OneDrive\Desktop\Test\New folder
+
+Files Searched:
+C:\Users\ajays\OneDrive\Desktop\Test\New folder\report1.txt
+C:\Users\ajays\OneDrive\Desktop\Test\New folder - Copy\report1.txt
+
+==================================================
+Directory: C:\Users\ajays\OneDrive\Desktop\Test\New folder
 ==================================================
 
-Checking file: report2.txt for keyword '12.8'
+Checking file: report1.txt for keyword '12.5'
 LINE       | WORD POSITIONS
 --------------------------------
-Line: 118    | [3]
+Line: 8      | [3]
+Line: 67     | [3]
+
+==================================================
+Directory: C:\Users\ajays\OneDrive\Desktop\Test\New folder - Copy
+==================================================
+
+Checking file: report1.txt for keyword '12.5'
+LINE       | WORD POSITIONS
+--------------------------------
+Line: 8      | [3]
+Line: 67     | [3]
+
+
+==================================================
+SUMMARY OF SEARCH
+==================================================
+Total Directories Searched: 3
+Total Files Searched: 2
+
+Directories Searched:
+C:\Users\ajays\OneDrive\Desktop\Test
+C:\Users\ajays\OneDrive\Desktop\Test\New folder - Copy
+C:\Users\ajays\OneDrive\Desktop\Test\New folder
+
+Files Searched:
+C:\Users\ajays\OneDrive\Desktop\Test\New folder\report1.txt
+C:\Users\ajays\OneDrive\Desktop\Test\New folder - Copy\report1.txt
