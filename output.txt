@@ -2,58 +2,85 @@ Search Results
 ==================================================
 
 
-**************************************************
-String not found in any files in directory: 'C:\Users\ajays\OneDrive\Desktop\Test'.
-**************************************************
+Searching for '12.5' in file: report1.txt
+==================================================
+Matches found for '12.5' in file: report1.txt
+LINE       | WORD POSITIONS
+------------------------------
+Line: 8      | [3]
+Line: 67     | [3]
+
+
+
+
+
+Searching for '12.5' in file: report2.txt
+==================================================
+No matches found for '12.5' in file: report2.txt
+
+
+
+Searching for '12.5' in file: SDE.pdf
+==================================================
+No matches found for '12.5' in file: SDE.pdf
+
+
+
+Searching for '12.5' in file: spring_boot_tutorial[1].pdf
+==================================================
+No matches found for '12.5' in file: spring_boot_tutorial[1].pdf
+
+
+
+Searching for '12.5' in file: report1.txt
+==================================================
+Matches found for '12.5' in file: report1.txt
+LINE       | WORD POSITIONS
+------------------------------
+Line: 8      | [3]
+Line: 67     | [3]
+
+
+
+
+
+Searching for '12.5' in file: report1.txt
+==================================================
+Matches found for '12.5' in file: report1.txt
+LINE       | WORD POSITIONS
+------------------------------
+Line: 8      | [3]
+Line: 67     | [3]
+
+
+
+
 
 
 ==================================================
 SUMMARY OF SEARCH
 ==================================================
 Total Directories Searched: 3
-Total Files Searched: 2
+Total Files Searched: 6
+Keywords Searched: 12.5
 
-Directories Searched:
-C:\Users\ajays\OneDrive\Desktop\Test
+Matched Directories: 3
+
+Directories with Matches:
 C:\Users\ajays\OneDrive\Desktop\Test\New folder - Copy
 C:\Users\ajays\OneDrive\Desktop\Test\New folder
+C:\Users\ajays\OneDrive\Desktop\Test
+
+Directories Searched:
+C:\Users\ajays\OneDrive\Desktop\Test\New folder - Copy
+C:\Users\ajays\OneDrive\Desktop\Test\New folder
+C:\Users\ajays\OneDrive\Desktop\Test
 
 Files Searched:
+C:\Users\ajays\OneDrive\Desktop\Test\report1.txt
+C:\Users\ajays\OneDrive\Desktop\Test\report2.txt
+C:\Users\ajays\OneDrive\Desktop\Test\SDE.pdf
+C:\Users\ajays\OneDrive\Desktop\Test\spring_boot_tutorial[1].pdf
 C:\Users\ajays\OneDrive\Desktop\Test\New folder\report1.txt
 C:\Users\ajays\OneDrive\Desktop\Test\New folder - Copy\report1.txt
 
-==================================================
-Directory: C:\Users\ajays\OneDrive\Desktop\Test\New folder
-==================================================
-
-Checking file: report1.txt for keyword '12.5'
-LINE       | WORD POSITIONS
---------------------------------
-Line: 8      | [3]
-Line: 67     | [3]
-
-==================================================
-Directory: C:\Users\ajays\OneDrive\Desktop\Test\New folder - Copy
-==================================================
-
-Checking file: report1.txt for keyword '12.5'
-LINE       | WORD POSITIONS
---------------------------------
-Line: 8      | [3]
-Line: 67     | [3]
-
-
-==================================================
-SUMMARY OF SEARCH
-==================================================
-Total Directories Searched: 3
-Total Files Searched: 2
-
-Directories Searched:
-C:\Users\ajays\OneDrive\Desktop\Test
-C:\Users\ajays\OneDrive\Desktop\Test\New folder - Copy
-C:\Users\ajays\OneDrive\Desktop\Test\New folder
-
-Files Searched:
-C:\Users\ajays\OneDrive\Desktop\Test\New folder\report1.txt
-C:\Users\ajays\OneDrive\Desktop\Test\New folder - Copy\report1.txt

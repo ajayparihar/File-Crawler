@@ -4,13 +4,12 @@
 #              (text and PDF) within a given directory. It logs the occurrences
 #              of the keywords along with their positions in the files.
 # Author: Ajay Singh
-# Version: 1.1
+# Version: 1.0
 # Date: 27-10-2024
 
 import os
 import fnmatch
 
-# Attempt to import necessary libraries for PDF handling and colored terminal output
 try:
     import PyPDF2
     PDF_SUPPORTED = True
@@ -23,12 +22,15 @@ try:
 except ImportError:
     pass
 
-# ========================== Error Handling ==========================
 def log_error(message):
     """Log error messages in red."""
     print(f"{Fore.RED}Error: {message}{Style.RESET_ALL}")
 
-# ========================== File Search ==========================
+def write_and_print(out_file, message):
+    """Write the message to file and print to the console."""
+    out_file.write(message + "\n")
+    print(message)
+
 def get_word_positions(words, search_string):
     """Return positions of search_string in a list of words."""
     return [index for index, word in enumerate(words) if word.lower() == search_string.lower()]
@@ -75,20 +77,25 @@ def search_files(directory, search_strings, output_file):
         '*.tsv', '*.ini', '*.config', '*.svg', '*.sh', '*.pl', '*.rb', '*.pdf'
     ]
 
-    found_any = False
-    directories_searched = set()  # Track unique directories
-    files_searched = []  # Track all files processed
+    directories_searched = set()
+    files_searched = []
+    matched_directories = set()
     
     with open(output_file, 'a') as out_file:
         for dirpath, _, filenames in os.walk(directory):
-            directories_searched.add(dirpath)  # Add directory to the set
+            directories_searched.add(dirpath)
+            directory_match_found = False
 
             for pattern in file_patterns:
                 for filename in fnmatch.filter(filenames, pattern):
                     file_path = os.path.join(dirpath, filename)
-                    files_searched.append(file_path)  # Add file to list
+                    files_searched.append(file_path)
 
                     for search_string in search_strings:
+                        write_and_print(out_file, f"\nSearching for '{search_string}' in file: {filename}")
+                        write_and_print(out_file, "=" * 50)
+                        occurrences = []
+
                         if filename.lower().endswith('.pdf') and PDF_SUPPORTED:
                             occurrences = search_pdf_file(file_path, search_string)
                             context_label = "Page"
@@ -97,59 +104,40 @@ def search_files(directory, search_strings, output_file):
                             context_label = "Line"
 
                         if occurrences:
-                            found_any = True
-                            log_and_print_directory(out_file, dirpath)
+                            if not directory_match_found:
+                                matched_directories.add(dirpath)
+                                directory_match_found = True
                             log_and_print_occurrences(out_file, filename, occurrences, context_label, search_string)
+                        else:
+                            write_and_print(out_file, f"No matches found for '{search_string}' in file: {filename}")
+                        write_and_print(out_file, "\n")
 
-        if not found_any:
-            output_no_results(out_file, directory)
-
-        # Write the summary at the end of the output file
-        write_summary(out_file, directories_searched, files_searched)
-
-def log_and_print_directory(out_file, directory):
-    """Log and print the directory found with formatting."""
-    output = f"\n{'=' * 50}\nDirectory: {directory}\n{'=' * 50}\n"
-    out_file.write(output)
-    print(output)
+        write_summary(out_file, directories_searched, files_searched, search_strings, matched_directories)
 
 def log_and_print_occurrences(out_file, filename, occurrences, context_label, search_string):
     """Log and print occurrences of the found string in a structured format."""
-    header = f"\nChecking file: {filename} for keyword '{search_string}'\n"
-    out_file.write(header)
-    print(header)
-
-    # Print table header
-    table_header = f"{context_label.upper():<10} | {'WORD POSITIONS'}"
-    out_file.write(table_header + "\n")
-    print(table_header)
-    print("-" * (len(table_header) + 5))  # Separator length adjustment
-    out_file.write("-" * (len(table_header) + 5) + "\n")
+    header = f"Matches found for '{search_string}' in file: {filename}"
+    write_and_print(out_file, header)
+    write_and_print(out_file, f"{context_label.upper():<10} | {'WORD POSITIONS'}")
+    write_and_print(out_file, "-" * 30)
 
     for index, positions in occurrences:
         out_line = f"{context_label.capitalize()}: {index:<6} | {positions}"
-        out_file.write(out_line + "\n")
-        print(out_line)
+        write_and_print(out_file, out_line)
+    write_and_print(out_file, "\n")
 
-    print()  # Line break in console
-
-def output_no_results(out_file, directory):
-    """Output when no results are found."""
-    message = f"\n{'*' * 50}\nString not found in any files in directory: '{directory}'.\n{'*' * 50}\n"
-    out_file.write(message)
-    print(message)
-
-def write_summary(out_file, directories_searched, files_searched):
-    """Write a summary of directories and files searched to the output file."""
-    summary = "\n\n" + "=" * 50 + "\nSUMMARY OF SEARCH\n" + "=" * 50 + "\n"
-    summary += f"Total Directories Searched: {len(directories_searched)}\n"
-    summary += f"Total Files Searched: {len(files_searched)}\n\n"
+def write_summary(out_file, directories_searched, files_searched, search_strings, matched_directories):
+    """Write a summary of directories and files searched, including matched directories."""
+    summary = "\n\n" + "=" * 50 + "\nSUMMARY OF SEARCH\n" + "=" * 50
+    summary += f"\nTotal Directories Searched: {len(directories_searched)}"
+    summary += f"\nTotal Files Searched: {len(files_searched)}"
+    summary += f"\nKeywords Searched: {', '.join(search_strings)}\n"
+    summary += f"\nMatched Directories: {len(matched_directories)}"
+    summary += "\n\nDirectories with Matches:\n" + "\n".join(matched_directories) + "\n\n"
     summary += "Directories Searched:\n" + "\n".join(directories_searched) + "\n\n"
     summary += "Files Searched:\n" + "\n".join(files_searched) + "\n"
-    out_file.write(summary)
-    print(summary)
+    write_and_print(out_file, summary)
 
-# ========================== Input Handling ==========================
 def read_input_file(input_file):
     """Read directory and search keywords from an input file."""
     try:
@@ -171,7 +159,6 @@ def update_input_file(input_file, directory, keywords):
         file.write(directory + '\n')
         file.write('\n'.join(keywords) + '\n')
 
-# ========================== Main Function ==========================
 def main():
     input_file = 'input.txt'
     output_file = 'output.txt'  # Output file to log results
