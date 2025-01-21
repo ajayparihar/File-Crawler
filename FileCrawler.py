@@ -22,7 +22,7 @@ try:
     from colorama import Fore, Style, init
     init(autoreset=True)
 except ImportError:
-    pass
+    Fore = Style = None
 
 # ========================== Constants ==========================
 OUTPUT_HEADER = "Search Results"
@@ -33,11 +33,20 @@ FILE_PATTERNS = [
     '*.xlsx', '*.ppt', '*.pptx', '*.rtf', '*.sql', '*.yaml', '*.yml',
     '*.tsv', '*.ini', '*.config', '*.svg', '*.sh', '*.pl', '*.rb', '*.pdf'
 ]
+INPUT_FILE = 'input.txt'
+OUTPUT_FILE = 'output.txt'
+DISPLAY_SUMMARY = 0  # 0 = No summary, 1 = Full summary
+DIRECTORY_PROMPT = "Please enter the directory to search (leave blank to use existing): "
+KEYWORDS_PROMPT = "Please enter keywords to search (separated by '--', leave blank to use existing): "
+ANOTHER_SEARCH_PROMPT = "Do you want to perform another search? (y/n): "
 
 # ========================== Error Handling ==========================
 def log_error(message):
     """Log error messages in red."""
-    print(f"{Fore.RED}Error: {message}{Style.RESET_ALL}")
+    if Fore and Style:
+        print(f"{Fore.RED}Error: {message}{Style.RESET_ALL}")
+    else:
+        print(f"Error: {message}")
 
 def write_and_print(out_file, message):
     """Write the message to the output file and print to the console."""
@@ -59,13 +68,17 @@ def search_text_file(filename, search_string):
                 positions = get_word_positions(words, search_string)
                 if positions:
                     occurrences.append((line_num, positions))
-    except (FileNotFoundError, IOError) as e:
-        log_error(f"Could not read text file '{filename}': {e}")
+    except Exception as e:
+        log_error(f"Failed to read file {filename}: {e}")
     return occurrences
 
 def search_pdf_file(filename, search_string):
     """Search for a string in a PDF file and return its page and word positions."""
     occurrences = []
+    if not PDF_SUPPORTED:
+        log_error("PDF support is not available. Install PyPDF2 to enable PDF search.")
+        return occurrences
+
     try:
         with open(filename, 'rb') as file:
             reader = PyPDF2.PdfReader(file)
@@ -77,18 +90,16 @@ def search_pdf_file(filename, search_string):
                     if positions:
                         occurrences.append((page_num + 1, positions))
     except Exception as e:
-        log_error(f"Could not read PDF file '{filename}': {e}")
+        log_error(f"Failed to read PDF file {filename}: {e}")
     return occurrences
 
 def search_files(directory, search_strings, output_file):
     """Search for strings in all readable files in the specified directory."""
-    directories_searched = set()
     files_searched = []
     matched_directories = set()
 
     with open(output_file, 'a') as out_file:
         for dirpath, _, filenames in os.walk(directory):
-            directories_searched.add(dirpath)
             directory_match_found = False
 
             for pattern in FILE_PATTERNS:
@@ -105,7 +116,8 @@ def search_files(directory, search_strings, output_file):
                                 directory_match_found = True
                             log_and_print_occurrences(out_file, file_path, occurrences, search_string)
 
-        write_summary(out_file, directories_searched, files_searched, search_strings, matched_directories)
+        if DISPLAY_SUMMARY == 1:
+            write_summary(out_file, files_searched, search_strings, matched_directories)
 
 def log_and_print_occurrences(out_file, file_path, occurrences, search_string):
     """Log and print occurrences of the found string in a structured format, with full file path."""
@@ -119,44 +131,42 @@ def log_and_print_occurrences(out_file, file_path, occurrences, search_string):
         write_and_print(out_file, out_line)
     write_and_print(out_file, "\n")
 
-def write_summary(out_file, directories_searched, files_searched, search_strings, matched_directories):
-    """Write a summary of directories and files searched, including matched directories."""
+def write_summary(out_file, files_searched, search_strings, matched_directories):
+    """Write a summary of the search results."""
     summary = "\n\n" + OUTPUT_SEPARATOR + "SUMMARY OF SEARCH\n" + OUTPUT_SEPARATOR
-    summary += f"Total Directories Searched: {len(directories_searched)}\n"
-    summary += f"Total Files Searched: {len(files_searched)}\n"
     summary += f"Keywords Searched: {', '.join(search_strings)}\n"
     summary += f"Matched Directories: {len(matched_directories)}\n"
     summary += "Directories with Matches:\n" + "\n".join(matched_directories) + "\n"
-    summary += "Directories Searched:\n" + "\n".join(directories_searched) + "\n"
     summary += "Files Searched:\n" + "\n".join(files_searched) + "\n"
     write_and_print(out_file, summary)
 
 # ========================== Input Handling ==========================
 def read_input_file(input_file):
-    """Read directory and search keywords from an input file."""
+    """Read the input file to get the directory and keywords."""
     try:
         with open(input_file, 'r') as file:
             lines = file.readlines()
             directory = lines[0].strip()
-            keywords = [line.strip() for line in lines[1:] if line.strip()]
+            keywords = [keyword.strip() for keyword in lines[1].split('--') if keyword.strip()]
             return directory, keywords
-    except FileNotFoundError:
-        log_error(f"Input file not found: '{input_file}'")
-        return None, []
     except Exception as e:
-        log_error(f"Could not read input file: {e}")
-        return None, []
+        log_error(f"Failed to read input file {input_file}: {e}")
+        return "", []
 
 def update_input_file(input_file, directory, keywords):
-    """Update the input file with the latest directory and keywords."""
-    with open(input_file, 'w') as file:
-        file.write(directory + '\n')
-        file.write('\n'.join(keywords) + '\n')
+    """Update the input file with the new directory and keywords."""
+    try:
+        with open(input_file, 'w') as file:
+            file.write(directory + "\n")
+            file.write('--'.join(keywords) + "\n")
+    except Exception as e:
+        log_error(f"Failed to update input file {input_file}: {e}")
 
 # ========================== Main Function ==========================
 def main():
-    input_file = 'input.txt'
-    output_file = 'output.txt'  # Output file to log results
+    """Main function to handle user input and initiate the search process."""
+    input_file = INPUT_FILE
+    output_file = OUTPUT_FILE  # Output file to log results
 
     # Clear the output file at the start of each run
     with open(output_file, 'w') as f:
@@ -167,8 +177,8 @@ def main():
         directory, existing_keywords = read_input_file(input_file)
 
         # Prompt user for input
-        directory_input = input("Please enter the directory to search (leave blank to use existing): ").strip()
-        search_keywords_input = input("Please enter keywords to search (separated by '--', leave blank to use existing): ").strip()
+        directory_input = input(DIRECTORY_PROMPT).strip()
+        search_keywords_input = input(KEYWORDS_PROMPT).strip()
 
         # Use existing inputs if none provided
         if directory_input:
@@ -197,7 +207,7 @@ def main():
             search_files(directory, [search_string], output_file)  # Pass the current search string as a list
 
         # Ask user if they want to perform another search
-        if input("Do you want to perform another search? (y/n): ").strip().lower() not in {'y', 'yes', ''}:
+        if input(ANOTHER_SEARCH_PROMPT).strip().lower() not in {'y', 'yes', ''}:
             break
 
 # Entry point of the script
